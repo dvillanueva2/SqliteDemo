@@ -1,11 +1,13 @@
 package ca.nait.dmit.dmit2504;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -62,10 +64,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+    // define a nested class which is a broadcast receiver. go to adapter to see all these blocks of code below in action
     public static final String INTENT_ACTION_CATEGORY_DELETE = "ca.nait.dmit.dmit2504.CATEGORY_DELETE"; // DEFINE STRING CONSTANTS TO DEFINE OUR ACTIONS
     public static final String EXTRA_CATEGORY_CATEGORYID = "ca.nait.dmit.dmit2504.CATEGORY_ID"; // define a constant that we may use as a key for the "category on delete"
 
-    // define a nested class which is a broadcast receiver
+
     class DeleteCategoryBroadcastReceiver extends BroadcastReceiver {
         // Must implement the onReceive method alt-insert - implement method , select onReceive method
 
@@ -79,13 +83,54 @@ public class MainActivity extends AppCompatActivity {
                 int categoryId = intent.getIntExtra(EXTRA_CATEGORY_CATEGORYID, 0);
                 if (categoryId > 0 ) // of it's not greater than zero there is no item to delete
                 {
+                    // create a delete confirmation button
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Delete Confirmation")
+                            .setMessage("Are you sure you want to delete item " + categoryId + "?")
+                            // lambda expression - press ctrl-space and select the lambda expression
+                            .setPositiveButton("Yes I am sure", (dialogInterface, i) -> {
+                                DatabaseHelper dbHelper = new DatabaseHelper(context); // instantiating a DatabaseHelper class
+                                dbHelper.deleteCategory(categoryId); // calling the DatabaseHelper method
+                                rebindRecycleView();// we need to remove an item from the recycleView. This is how we do it. rebindRecycleView() will fetch all the categories from the database again
+                                Toast.makeText(context, "Delete was successful", Toast.LENGTH_SHORT).show(); // show result feedback
+                            })
+                            .setNegativeButton("No", (dialogInterface, i) -> {
+                                Toast.makeText(context, "Delete was cancelled", Toast.LENGTH_SHORT).show();
+                            });
+                    // show the confirmation dialog
+                    builder.show();
+
+                    /* move this code to the where we delete our database .setPositiveButton
                     DatabaseHelper dbHelper = new DatabaseHelper(context); // instantiating a DatabaseHelper class
                     dbHelper.deleteCategory(categoryId); // calling the DatabaseHelper method
                     rebindRecycleView();// we need to remove an item from the recycleView. This is how we do it. rebindRecycleView() will fetch all the categories from the database again
-                    Toast.makeText(context, "Delete was successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Delete was successful", Toast.LENGTH_SHORT).show(); // show result feedback
+                    */
                 }
             }
         }
+    }
+
+    // to use the broadcast class we need to register it. we can do that on the the resumed event of the activity. on activity resume we are interested in listening to the delete category broadcast receiver event
+    private DeleteCategoryBroadcastReceiver currentDeleteCategoryBroadcastReceiver = new DeleteCategoryBroadcastReceiver();
+
+    // register this object on onReceive event of the activity. register the receiver using this method
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter categoryDeleteIntentFilter = new IntentFilter();  // type of receiver we're interested in listening
+        categoryDeleteIntentFilter.addAction(INTENT_ACTION_CATEGORY_DELETE);// in our IntentFilter we need an action. This is a string
+        registerReceiver(currentDeleteCategoryBroadcastReceiver, categoryDeleteIntentFilter); // register the intent filter. we are registering a receiver that can receive information about these types of broadcast messages
+    }
+
+    // as good pratice: on pause, we can unregister the receiver
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        unregisterReceiver(currentDeleteCategoryBroadcastReceiver);
     }
 }
 

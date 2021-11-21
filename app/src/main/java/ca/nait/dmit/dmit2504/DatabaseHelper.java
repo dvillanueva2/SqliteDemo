@@ -177,8 +177,7 @@ public class DatabaseHelper extends SQLiteOpenHelper { // implement methods - se
     }
 }
 
-// Continue on 20:32 on second recording
-// OBJECTIVE: CRUD
+// OBJECTIVE: CRUD and BROADCAST RECEIVERS
 // source videos: https://naitca.sharepoint.com/teams/dmit2504-1211-oa01-oa02/Shared%20Documents/Forms/AllItems.aspx?id=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2025%20%2D%20Sqlite%20and%20Broadcast%20Receivers%2FRecordings%2FView%20Only%2FDMIT2504%20Monday%2C%20October%2025%20OPTIONAL%20live%20meeting%2D20211025%5F081349%2DMeeting%20Recording%2Emp4&parent=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2025%20%2D%20Sqlite%20and%20Broadcast%20Receivers%2FRecordings%2FView%20Only
 // and https://naitca.sharepoint.com/teams/dmit2504-1211-oa01-oa02/Shared%20Documents/Forms/AllItems.aspx?id=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2025%20%2D%20Sqlite%20and%20Broadcast%20Receivers%2FRecordings%2FView%20Only%2FDMIT2504%20Monday%2C%20October%2025%20OPTIONAL%20live%20meeting%2D20211025%5F090018%2DMeeting%20Recording%2Emp4&parent=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2025%20%2D%20Sqlite%20and%20Broadcast%20Receivers%2FRecordings%2FView%20Only
 // reference: https://developer.android.com/training/data-storage/sqlite

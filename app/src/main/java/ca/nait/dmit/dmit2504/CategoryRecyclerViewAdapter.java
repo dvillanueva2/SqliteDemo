@@ -1,6 +1,7 @@
 package ca.nait.dmit.dmit2504;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +65,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
     // Step 1: Create a ViewHolder class that defines the views for a single item
     // Create a constructor. - hit alt-enter then Create constructor matching super. This is responsible for finding all individual views and our list item
-    public static class CategoryViewHolder extends ViewHolder {
+    public class CategoryViewHolder extends ViewHolder { // [1]
         // declare view DATA FIELDS for the list items
         public TextView categoryIdTextView;
         public TextView categoryNameTextView;
@@ -80,14 +81,49 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
             // lambda expresssion - ctrl + space then select the option. you need to manually enter the curly braces
             deleteButton.setOnClickListener(view -> {
                 int position = getAdapterPosition(); // get the position
-                Toast.makeText(itemView.getContext(), "Delete category at index " + position, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(itemView.getContext(), "Delete category at index " + position, Toast.LENGTH_SHORT).show(); - test out if the item can be detected based on position
                 // we can actually delete items using Broadcast Receivers, which can send "messages to the MainActivity.java". we need to define a broadcast receiver class from there
+
+                // get the category associated with the position that was clicked on
+                Category currentCategory = categories.get(position);
+                // send a broadcast message to our main activity to tell which item to delete
+                Intent deleteCategoryIntent = new Intent();
+                // set a delete action
+                deleteCategoryIntent.setAction(MainActivity.INTENT_ACTION_CATEGORY_DELETE);
+                // specify the categoryId
+                deleteCategoryIntent.putExtra(MainActivity.EXTRA_CATEGORY_CATEGORYID, currentCategory.getCategoryId());
+
+                // we can now send a broadcast message. we have to be inside the context so we can access this directly by accessing the itemView
+                itemView.getContext().sendBroadcast(deleteCategoryIntent); // broadcast message sent to delete the category
             });
         } // import ViewHolder - hit alt- enter to ViewHolder
-
-
-
     }
 }
 
-// after making the
+
+/*
+1: public static class in an inner class. we want this to be changed to a nested class, which allows to access properties of the parent class
+old code.
+// Step 1: Create a ViewHolder class that defines the views for a single item
+// Create a constructor. - hit alt-enter then Create constructor matching super. This is responsible for finding all individual views and our list item
+public static class CategoryViewHolder extends ViewHolder {
+    // declare view DATA FIELDS for the list items
+    public TextView categoryIdTextView;
+    public TextView categoryNameTextView;
+    public ImageButton deleteButton;
+
+    public CategoryViewHolder(@NonNull View itemView) {
+        super(itemView);
+
+        categoryIdTextView = itemView.findViewById(R.id.list_item_category_id_textview);
+        categoryNameTextView = itemView.findViewById(R.id.list_item_category_categoryname_textview);
+        deleteButton = itemView.findViewById(R.id.list_item_category_delete_button);
+
+        // lambda expresssion - ctrl + space then select the option. you need to manually enter the curly braces
+        deleteButton.setOnClickListener(view -> {
+            int position = getAdapterPosition(); // get the position
+            Toast.makeText(itemView.getContext(), "Delete category at index " + position, Toast.LENGTH_SHORT).show();
+            // we can actually delete items using Broadcast Receivers, which can send "messages to the MainActivity.java". we need to define a broadcast receiver class from there
+        });
+    } // import ViewHolder - hit alt- enter to ViewHolder
+*/
