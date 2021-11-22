@@ -70,6 +70,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         public TextView categoryIdTextView;
         public TextView categoryNameTextView;
         public ImageButton deleteButton;
+        public ImageButton editButton;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,7 +78,9 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
             categoryIdTextView = itemView.findViewById(R.id.list_item_category_id_textview);
             categoryNameTextView = itemView.findViewById(R.id.list_item_category_categoryname_textview);
             deleteButton = itemView.findViewById(R.id.list_item_category_delete_button);
+            editButton = itemView.findViewById(R.id.list_item_category_edit_button);
 
+            // listener for the deleteButton
             // lambda expresssion - ctrl + space then select the option. you need to manually enter the curly braces
             deleteButton.setOnClickListener(view -> {
                 int position = getAdapterPosition(); // get the position
@@ -95,6 +98,17 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
                 // we can now send a broadcast message. we have to be inside the context so we can access this directly by accessing the itemView
                 itemView.getContext().sendBroadcast(deleteCategoryIntent); // broadcast message sent to delete the category
+            });
+
+            // listener for the editButton --> to EDIT items. we can inform there is an item to edit by sending broadcast messages. before we can send broadcast message we need to create a broadcast receiver class in our main activity
+            // lambda expresssion - ctrl + space then select the option. you need to manually enter the curly braces
+            editButton.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                Category currentCategory = categories.get(position); // access the parent class --> it is a category recycle view adapter. We're gonna access the categories datafield, we're gonna get the position
+                Intent editCategoryIntent = new Intent();
+                editCategoryIntent.setAction(MainActivity.INTENT_ACTION_CATEGORY_EDIT);
+                editCategoryIntent.putExtra(MainActivity.EXTRA_CATEGORY_CATEGORYID, currentCategory.getCategoryId());
+                itemView.getContext().sendBroadcast(editCategoryIntent);
             });
         } // import ViewHolder - hit alt- enter to ViewHolder
     }
