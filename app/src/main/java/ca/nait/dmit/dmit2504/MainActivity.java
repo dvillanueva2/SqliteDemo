@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 }
 
 
-// OBJECTIVE: Store, read, display data on a SQL database
+// OBJECTIVE 1: Store, read, display data on a SQL database
 
 // https://nait.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d845b5d8-77af-4e53-afc2-adc70155d3b4 -- video source
 // we wat to create an app that can manage a catalog for us. we're gonna store category name initially
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
 // RecyclerView
 // List view only can display in column layout. RecyclerView can be displayed in different layout and appearances like linear, grid or multiple columns
 
-// continue on 9:20 - line 70
-// OBJECTIVE: how to modify our Sqlite demo app so we can edit and update a selected category, then add a user interface so we can add a new product and how to bind
+// OBJECTIVE 2: how to modify our Sqlite demo app so we can edit and update a selected category, then add a user interface so we can add a new product and how to bind
 // data to a spinner using a simple cursor adapter
 // video source: https://naitca.sharepoint.com/teams/dmit2504-1211-oa01-oa02/Shared%20Documents/Forms/AllItems.aspx?id=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2026%20%2D%20CRUD%20UI%20and%20SimpleCursorAdapter%2FRecordings%2FView%20Only%2FDMIT2504%20Tuesday%2C%20Oct%2026%20OPTIONAL%20Meeting%2D20211026%5F081852%2DMeeting%20Recording%2Emp4&parent=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2026%20%2D%20CRUD%20UI%20and%20SimpleCursorAdapter%2FRecordings%2FView%20Only
+

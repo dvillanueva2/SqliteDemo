@@ -68,6 +68,8 @@ public class DialogCategoryEdit extends DialogFragment {
             }
         });
 
+        builder.setView(dialogView).setTitle("Edit Category"); // set the view to display the edit category dialog
+
         return builder.create();
     }
 }
