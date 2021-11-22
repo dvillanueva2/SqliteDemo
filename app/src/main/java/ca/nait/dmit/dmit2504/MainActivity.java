@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
 
         rebindRecycleView(); // execute  this when the activity is created
+
+        binding.activityMainFab.setOnClickListener(view1 -> {
+            DialogCategoryAdd addDialog = new DialogCategoryAdd(this);
+            addDialog.show(getSupportFragmentManager(), "DialogCategoryAdd");// show the dialog fragment
+        }); // creates an object based on the id name of the Floating Action button. The underscores are taken out automatically for us
     }
 
     // to populate the recycler view
@@ -44,24 +49,24 @@ public class MainActivity extends AppCompatActivity {
         binding.activityMainCategoriesRecyclerview.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    public void onSaveButtonClick(View view) {
-        String categoryName = binding.activityMainCategorynameEdittext.getText().toString();
-        if (categoryName.isEmpty())
-        {
-            Toast.makeText(this, "Category Name is required", Toast.LENGTH_SHORT).show();
-        }
-        else
-        { // need to make an addCategory first. Refer to CategoryDbHelper class for this
-            Category newCategory = new Category();
-            newCategory.setCategoryName(categoryName);
-            DatabaseHelper dbHelper = new DatabaseHelper(this);
-            long categoryId = dbHelper.addCategory(newCategory);
-            String message = String.format("Save successful with id %s", categoryId);
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-            binding.activityMainCategorynameEdittext.setText(""); // empty the text
-            rebindRecycleView(); // execute this after we add a new item
-        }
-    }
+//    public void onSaveButtonClick(View view) {
+//        String categoryName = binding.activityMainCategorynameEdittext.getText().toString();
+//        if (categoryName.isEmpty())
+//        {
+//            Toast.makeText(this, "Category Name is required", Toast.LENGTH_SHORT).show();
+//        }
+//        else
+//        { // need to make an addCategory first. Refer to CategoryDbHelper class for this
+//            Category newCategory = new Category();
+//            newCategory.setCategoryName(categoryName);
+//            DatabaseHelper dbHelper = new DatabaseHelper(this);
+//            long categoryId = dbHelper.addCategory(newCategory);
+//            String message = String.format("Save successful with id %s", categoryId);
+//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+//            binding.activityMainCategorynameEdittext.setText(""); // empty the text
+//            rebindRecycleView(); // execute this after we add a new item
+//        }
+//    }
 
 
 
@@ -178,6 +183,20 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Update was not successful", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void addCategory(Category newCategory)
+    {
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        if (dbHelper.addCategory(newCategory) > 0)
+        {
+            rebindRecycleView(); // the reason why we put code on a separate method. We need to refresh the contents (for maintenance reasons)
+            Toast.makeText(this, "Add was successful", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(this, "Add was not successful", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
 
 
@@ -201,3 +220,9 @@ public class MainActivity extends AppCompatActivity {
 // data to a spinner using a simple cursor adapter
 // video source: https://naitca.sharepoint.com/teams/dmit2504-1211-oa01-oa02/Shared%20Documents/Forms/AllItems.aspx?id=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2026%20%2D%20CRUD%20UI%20and%20SimpleCursorAdapter%2FRecordings%2FView%20Only%2FDMIT2504%20Tuesday%2C%20Oct%2026%20OPTIONAL%20Meeting%2D20211026%5F081852%2DMeeting%20Recording%2Emp4&parent=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2026%20%2D%20CRUD%20UI%20and%20SimpleCursorAdapter%2FRecordings%2FView%20Only
 
+// OBJECTIVE 3: Floating Action Button and new add category
+// https://sqlitebrowser.org
+// source video: https://naitca.sharepoint.com/teams/dmit2504-1211-oa01-oa02/Shared%20Documents/Forms/AllItems.aspx?id=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2027%20%2D%20SimpleCursorAdapter%2FRecordings%2FView%20Only%2FDMIT2504%20Thursday%2C%20Nov%2028%20OPTIONAL%20Meeting%2D20211028%5F080040%2DMeeting%20Recording%2Emp4&parent=%2Fteams%2Fdmit2504%2D1211%2Doa01%2Doa02%2FShared%20Documents%2FDMIT2504%20Oct%2027%20%2D%20SimpleCursorAdapter%2FRecordings%2FView%20Only
+
+// OBJECTIVE 4: HOW TO BIND DATA TO ADAPTER VIEW LIKE A SPINNER OR A LIST VIEW USING A SIMPLE CURSOR ADAPTER
+// SIMPLE CURSOR ADAPTER IS FOR USE WHEN YOU HAVE A DATABASE RETURNING DATA USING CURSORS

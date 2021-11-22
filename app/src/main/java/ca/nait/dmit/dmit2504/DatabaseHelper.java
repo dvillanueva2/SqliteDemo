@@ -12,7 +12,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper { // implement methods - select onCreate and onUpgrade
 
     private static final String TAG = "DatabaseHelper"; // for defining purposes
-    public static final int DATABASE_VERSION = 1; // useful to determine to when to call the onCreate and onUpgrade method (1)
+    public static final int DATABASE_VERSION = 3; // useful to determine to when to call the onCreate and onUpgrade method (1)
     public static final String DATABASE_NAME = "SqliteDemo.db"; // if the database does not exist, the it's gonna call the OnCreate method. if the version does not match, the onUpgrade method will be created for us
 
     // strings for creating tables
@@ -21,8 +21,21 @@ public class DatabaseHelper extends SQLiteOpenHelper { // implement methods - se
             + DatabaseContract.CategoryEntry.COLUMN_NAME_CATEGORYNAME + " TEXT"
             + ")";
 
+    // Sqlite data types can be found here: https://www.sqlite.org/datatype3.html
+    private static final String SQL_CREATE_PRODUCT_ENTRIES =
+            "CREATE TABLE " + DatabaseContract.ProductEntry.TABLE_NAME + "("
+            + DatabaseContract.ProductEntry._ID + " INTEGER PRIMARY KEY, "
+            + DatabaseContract.ProductEntry.COLUMN_NAME_PRODUCTNAME + " TEXT, "
+            + DatabaseContract.ProductEntry.COLUMN_NAME_UNITPRICE + " REAL, "
+            + DatabaseContract.ProductEntry.COLUMN_NAME_CATEGORYID + " INTEGER, "
+            + "FOREIGN KEY (" + DatabaseContract.ProductEntry.COLUMN_NAME_CATEGORYID + ")"
+                + " REFERENCES " + DatabaseContract.CategoryEntry.TABLE_NAME + "(" + DatabaseContract.CategoryEntry._ID + ")"
+        + ")";
+
     private static final String SQL_DELETE_CATEGORY_ENTRIES =
             "DROP TABLE IF EXISTS " + DatabaseContract.CategoryEntry.TABLE_NAME; // database contract has all the tables names we need and all the columns for each table name
+    private static final String SQL_DELETE_PRODUCT_ENTRIES =
+            "DROP TABLE IF EXISTS " + DatabaseContract.ProductEntry.TABLE_NAME;// string for dropping this table
 
     // we should have a contructor that passes a context. we have to call the constructor in SQLiteOpenHelper
     public DatabaseHelper(Context context) {
@@ -33,11 +46,46 @@ public class DatabaseHelper extends SQLiteOpenHelper { // implement methods - se
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE_CATEGORY_ENTRIES);
+        sqLiteDatabase.execSQL(SQL_CREATE_PRODUCT_ENTRIES);
+
+        // you can create sample data here to aside from creating tables
+        final String insertCat1 = "INSERT INTO " + DatabaseContract.CategoryEntry.TABLE_NAME
+                + "(" + DatabaseContract.CategoryEntry.COLUMN_NAME_CATEGORYNAME + ")"
+                + "VALUES('Category 1')";
+        final String insertCat2 = "INSERT INTO " + DatabaseContract.CategoryEntry.TABLE_NAME
+                + "(" + DatabaseContract.CategoryEntry.COLUMN_NAME_CATEGORYNAME + ")"
+                + "VALUES('Category 2')";
+        final String insertCat3 = "INSERT INTO " + DatabaseContract.CategoryEntry.TABLE_NAME
+                + "(" + DatabaseContract.CategoryEntry.COLUMN_NAME_CATEGORYNAME + ")"
+                + "VALUES('Category 3')";
+        final String insertCat4 = "INSERT INTO category_table(category_name) VALUES('Category 4')";
+        final String insertCat5 = "INSERT INTO category_table(category_name) VALUES('Category 5')";
+        sqLiteDatabase.execSQL(insertCat1);
+        sqLiteDatabase.execSQL(insertCat2);
+        sqLiteDatabase.execSQL(insertCat3);
+        sqLiteDatabase.execSQL(insertCat4);
+        sqLiteDatabase.execSQL(insertCat5);
+//        Category category1 = new Category(); // you can create sample data here to aside from creating tables
+//        category1.setCategoryName("Category 1");
+//        addCategory(category1);
+        final String cat1Prod1 = "INSERT INTO product_table(product_name, unit_price, category_id) VALUES('Cat 1 Product 1', 1.23, 1)";
+        final String cat1Prod2 = "INSERT INTO product_table(product_name, unit_price, category_id) VALUES('Cat 1 Product 2', 4.56, 1)";
+        final String cat1Prod3 = "INSERT INTO product_table(product_name, unit_price, category_id) VALUES('Cat 1 Product 3', 7.89, 1)";
+        final String cat3Prod1 = "INSERT INTO product_table(product_name, unit_price, category_id) VALUES('Cat 3 Product 1', 9.87, 3)";
+        final String cat3Prod2 = "INSERT INTO product_table(product_name, unit_price, category_id) VALUES('Cat 3 Product 2', 6.54, 3)";
+        final String cat3Prod3 = "INSERT INTO product_table(product_name, unit_price, category_id) VALUES('Cat 3 Product 3', 3.21, 3)";
+        sqLiteDatabase.execSQL(cat1Prod1);
+        sqLiteDatabase.execSQL(cat1Prod2);
+        sqLiteDatabase.execSQL(cat1Prod3);
+        sqLiteDatabase.execSQL(cat3Prod1);
+        sqLiteDatabase.execSQL(cat3Prod2);
+        sqLiteDatabase.execSQL(cat3Prod3);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // delete our tables first. accessing sqlite database pass in this method:
+        sqLiteDatabase.execSQL(SQL_DELETE_CATEGORY_ENTRIES);
         sqLiteDatabase.execSQL(SQL_DELETE_CATEGORY_ENTRIES);
         onCreate(sqLiteDatabase);
     } // implement a method after entering this exact line
@@ -79,6 +127,38 @@ public class DatabaseHelper extends SQLiteOpenHelper { // implement methods - se
                 orderBy
         );
     }
+
+    // create a method that returns products by category
+    public Cursor getProductsByCategoryId(int categoryId) {
+        // specify the columns you want to return from the query
+        SQLiteDatabase db = getReadableDatabase();
+        String[] columns = {
+                DatabaseContract.ProductEntry._ID,
+                DatabaseContract.ProductEntry.COLUMN_NAME_PRODUCTNAME,
+                DatabaseContract.ProductEntry.COLUMN_NAME_UNITPRICE,
+                DatabaseContract.ProductEntry.COLUMN_NAME_CATEGORYID
+        };
+        // Specify the WHERE clause. Filter results WHERE "title" = 'My Title'
+        String selection = DatabaseContract.ProductEntry.COLUMN_NAME_CATEGORYID + " = ?";
+        // values for our "where" clause
+        String[] selectionArgs = {String.valueOf(categoryId)}; // "where" clause. Specify the where clause argument. The arguments is the question mark and the where clause which means the placeholder
+
+        String groupBy = null;
+        String having = null;
+        // How you want the results sorted in the resulting Cursor
+        String orderBy = DatabaseContract.ProductEntry.COLUMN_NAME_PRODUCTNAME + " ASC";
+
+        return db.query(
+                DatabaseContract.ProductEntry.TABLE_NAME,
+                columns,
+                selection,
+                selectionArgs,
+                groupBy,
+                having,
+                orderBy
+        );
+    }
+
 
     // READ or find one record using this method
     public Cursor findOneCategoryCursorById(int categoryId) {

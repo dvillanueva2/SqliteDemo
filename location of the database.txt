@@ -1,0 +1,2 @@
+The location of the sqlite database file is in:
+/data/data/package_name/databases/dbfile.db
